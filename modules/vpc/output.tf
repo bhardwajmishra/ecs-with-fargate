@@ -1,4 +1,4 @@
-output "vpc_number" {
+output "vpc_id" {
     value = aws_vpc.main.id
 }
 
@@ -12,4 +12,9 @@ output "aws_subnet_main_b" {
 
 output "aws_subnet_main_c" {
     value = aws_subnet.main_c.id
+}
+
+output "aws_security_group_main" {
+    value = aws_security_group.main.id
+
 }

@@ -64,17 +64,17 @@ resource "aws_ecs_service" "bhardwaj-html" {
   task_definition = aws_ecs_task_definition.main.arn
   desired_count   = 2
   iam_role        = var.iam_role
-  depends_on      = [aws_iam_role_policy.foo]
+  # depends_on      = [aws_iam_role_policy.foo]
 
-  ordered_placement_strategy {
-    type  = "binpack"
-    field = "cpu"
-  }
+  # ordered_placement_strategy {
+  #   type  = "binpack"
+  #   field = "cpu"
+  # }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.foo.arn
-    container_name   = "mongo"
-    container_port   = 8080
+    container_name   = "bhardwaj-html"
+    container_port   = 80
   }
 
   placement_constraints {
