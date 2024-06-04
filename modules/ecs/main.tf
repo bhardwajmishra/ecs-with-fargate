@@ -72,7 +72,7 @@ resource "aws_ecs_service" "bhardwaj-html" {
   # }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.foo.arn
+    target_group_arn = var.alb_target_group_arn
     container_name   = "bhardwaj-html"
     container_port   = 80
   }

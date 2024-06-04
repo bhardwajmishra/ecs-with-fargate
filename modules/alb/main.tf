@@ -2,20 +2,22 @@ resource "aws_lb" "main" {
   name               = "test-lb-tf"
   internal           = false
   load_balancer_type = "application"
-#   security_groups    = [var.sg_id.id]
-#   subnets            = [for subnet in aws_subnet.public : subnet.id]
-
-#   enable_deletion_protection = true
-
-#   access_logs {
-#     bucket  = aws_s3_bucket.lb_logs.id
-#     prefix  = "test-lb"
-#     enabled = true
-#   }
+  subnets             = ["${var.subnet_a}", "${var.subnet_b}"]
+  security_groups     = ["${var.sg_id}"]
 
   tags = {
     name = "tf-alb"
   }
+}
+
+// target group
+
+resource "aws_lb_target_group" "main" {
+  name        = "tf-example-lb-alb-tg"
+  target_type = "ip"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
 }
 
 // listener
@@ -31,12 +33,4 @@ resource "aws_lb_listener" "main" {
   }
 }
 
-// target group
 
-resource "aws_lb_target_group" "main" {
-  name        = "tf-example-lb-alb-tg"
-  target_type = "alb"
-  port        = 80
-  protocol    = "TCP"
-  vpc_id      = var.vpc_id
-}

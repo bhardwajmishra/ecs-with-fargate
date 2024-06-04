@@ -1,3 +1,3 @@
-output "aws_instance_profile" {
-    value = aws_iam_role.bhardwaj-ecs-task-exec.arn
+output "ecs_task_execution_role_arn" {
+    value = aws_iam_role.bhatdwaj-ecs-task-exec.arn
 }
