@@ -46,7 +46,14 @@ resource "aws_ecs_task_definition" "main" {
     "image": "public.ecr.aws/l9t7b5s8/ecrtf:html",
     "cpu": 1024,
     "memory": 2048,
+    "networkMode": "awsvpc",
     "essential": true
+    "portMappings": [
+                     {
+		"containerPort": 80
+		"hostPort": 80
+	      }
+    ]
   }
 ])
 
@@ -63,22 +70,21 @@ resource "aws_ecs_service" "bhardwaj-html" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
   desired_count   = 2
-  iam_role        = var.iam_role
-  # depends_on      = [aws_iam_role_policy.foo]
 
-  # ordered_placement_strategy {
-  #   type  = "binpack"
-  #   field = "cpu"
-  # }
+  network_configuration {
+    subnets = ["${var.subnet_a}", "${var.subnet_b}"]
+    security_groups = ["${var.sg_id}"]
+    
+  }
 
   load_balancer {
     target_group_arn = var.alb_target_group_arn
-    container_name   = "bhardwaj-html"
+    container_name   = "bhardwaj-td"
     container_port   = 80
   }
 
-  placement_constraints {
-    type       = "memberOf"
-    expression = "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]"
-  }
+  # placement_constraints {
+  #   type       = "memberOf"
+  #   expression = "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]"
+  # }
 }
