@@ -40,6 +40,9 @@ resource "aws_ecs_task_definition" "main" {
   network_mode             = "awsvpc"
   cpu                      = 1024
   memory                   = 2048
+  task_role_arn            = "${var.task_arn}"
+  execution_role_arn       = "${var.iam_role}"
+
   container_definitions    = jsonencode([
   {
     "name": "bhardwaj-td",
@@ -55,26 +58,23 @@ resource "aws_ecs_task_definition" "main" {
 	      }
     ]
   }
-])
-
-  runtime_platform {
-    operating_system_family = "LINUX"
-    cpu_architecture        = "X86_64"
-  }
+ ]
+ )
 }
 
 // service 
 
 resource "aws_ecs_service" "bhardwaj-html" {
   name            = "html"
+  launch_type     = "FARGATE"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
-  desired_count   = 2
+  desired_count   = 1
 
   network_configuration {
     subnets = ["${var.subnet_a}", "${var.subnet_b}"]
     security_groups = ["${var.sg_id}"]
-    
+    assign_public_ip = true
   }
 
   load_balancer {
